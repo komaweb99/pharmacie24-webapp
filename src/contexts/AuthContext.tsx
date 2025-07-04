@@ -6,7 +6,7 @@ import { auth, db } from '../firebase';
 interface AuthContextType {
   currentUser: User | null;
   userType: 'admin' | 'pharmacist' | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<'admin' | 'pharmacist'>;
   register: (email: string, password: string, pharmacyData: any) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
@@ -48,8 +48,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return unsubscribe;
   }, []);
 
-  const login = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+  const login = async (email: string, password: string): Promise<'admin' | 'pharmacist'> => {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    
+    // Fetch user type immediately after login
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const userType = userData.type as 'admin' | 'pharmacist';
+      setUserType(userType);
+      return userType;
+    } else {
+      throw new Error('User data not found');
+    }
   };
 
   const register = async (email: string, password: string, pharmacyData: any) => {

@@ -156,8 +156,8 @@ const Pharmacies = () => {
                       Dr. {pharmacy.pharmacistName}
                     </p>
                   </div>
-                  <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                    Ouverte
+                  <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm font-medium">
+                    En Garde
                   </div>
                 </div>
 
@@ -183,8 +183,8 @@ const Pharmacies = () => {
 
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex items-center space-x-2">
-                    <Clock className="h-4 w-4 text-green-600" />
-                    <span className="text-sm text-green-700 font-medium">
+                    <Clock className="h-4 w-4 text-emerald-600" />
+                    <span className="text-sm text-emerald-700 font-medium">
                       Pharmacie de garde
                     </span>
                   </div>

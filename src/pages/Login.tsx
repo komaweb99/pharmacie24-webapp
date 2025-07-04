@@ -17,7 +17,8 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(email, password);
+      const userType = await login(email, password);
+      
       Swal.fire({
         icon: 'success',
         title: 'Connexion réussie!',
@@ -25,7 +26,15 @@ const Login = () => {
         timer: 2000,
         showConfirmButton: false
       });
-      navigate('/');
+
+      // Redirect based on user type
+      if (userType === 'admin') {
+        navigate('/admin-dashboard');
+      } else if (userType === 'pharmacist') {
+        navigate('/pharmacist-dashboard');
+      } else {
+        navigate('/');
+      }
     } catch (error: any) {
       Swal.fire({
         icon: 'error',
