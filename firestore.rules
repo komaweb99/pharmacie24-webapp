@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection - only authenticated users can read/write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Pharmacies collection
+    match /pharmacies/{pharmacyId} {
+      // Anyone can read verified pharmacies
+      allow read: if resource.data.verified == true;
+      
+      // Only the owner can write to their pharmacy
+      allow write: if request.auth != null && request.auth.uid == pharmacyId;
+      
+      // Admins can read and write all pharmacies
+      allow read, write: if request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.type == 'admin';
+    }
+  }
+}
